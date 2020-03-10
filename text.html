@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta class="meta-viewport" name="viewport" content="user-scalable=no" />
+  <title>看板娘</title>
+  <link rel="stylesheet" type="text/css" href="./assets/waifu.css" />
+  <style>
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      margin: 0;
+      background: #000;
+    }
+
+    #waifu.mobile .waifu-tips {
+      left: 17vw;
+      right: 0;
+      width: 66vw;
+      min-height: 13vh;
+      padding: 1.8vw;
+      margin-top: -10vh;
+      box-sizing: border-box;
+      font-size: 4.3vw;
+    }
+  </style>
+  <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+</head>
+
+<body>
+  <div class="waifu" id="waifu" style="bottom: 0; left: auto; right: 18px; margin-left: auto; margin-right: auto; transform-origin: 50% 100%;">
+    <div class="waifu-tips" style="opacity: 1;"></div>
+    <canvas id="live2d" width="280" height="250" class="live2d" style=""></canvas>
+    <div class="waifu-tool" style="">
+      <span class="fui-home"></span>
+      <span class="fui-chat"></span>
+      <span class="fui-eye"></span>
+      <span class="fui-user"></span>
+      <!-- <span class="fui-photo"></span> -->
+      <!-- <span class="fui-info-circle"></span> -->
+      <!-- <span class="fui-cross"></span> -->
+    </div>
+  </div>
+  <script src="./assets/live2d.js"></script>
+  <script src="./assets/waifu-tips.js"></script>
+  <script type="text/javascript">
+    window.onload = function () {
+      preInit();
+      initModel();
+    }
+    function getQueryString(name) {
+      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+      var r = location.search.substr(1).match(reg);
+      if (r != null) return decodeURIComponent(r[2]);
+      return null;
+    }
+    function preInit() {
+      var dom = document.querySelector('#waifu');
+      var canvas = document.querySelector('#live2d');
+      var tips = document.querySelector('.waifu-tips');
+      var tool = document.querySelector('.waifu-tool');
+      var bottom = getQueryString('bottom') || 0;
+      var left = getQueryString('left');
+      var right = getQueryString('right') || 18;
+      var bg = (getQueryString('bg') || '').replace(/@/g, '#');
+      var scale = getQueryString('scale') || 1;
+      if(bg){
+        var body = document.body;
+        if(bg.indexOf('http') === 0){
+          body.style.background = 'url(' + bg +') center center no-repeat';
+          body.style.backgroundSize = 'contain';
+        } else {
+          body.style.background = bg;
+        }
+      }
+      dom.style.transform = 'scale(' + scale +')'
+      var innerWidth = window.innerWidth;
+      var innerHeight = window.innerHeight;
+      if (innerHeight > 1.2 * innerWidth) {
+        dom.className = 'waifu mobile';
+        dom.style.left = 0;
+        dom.style.right = 0;
+        dom.style.margin = 'auto 0';
+        canvas.width = window.innerWidth - 60;
+        canvas.height = (window.innerWidth - 60) * 250 / 280;
+        canvas.style.left = '30px';
+        tool.style['transform-origin'] = '100% 0';
+        tool.style['transform'] = 'scale(5)';
+      } else {
+        if (bottom) {
+          dom.style.bottom = bottom + 'px';
+        }
+        if (left) {
+          dom.style.right = 'auto';
+          dom.style.left = left + 'px';
+        } else if (right) {
+          dom.style.left = 'auto';
+          dom.style.right = right + 'px';
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>
